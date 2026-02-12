@@ -7,7 +7,7 @@ import Login from "./pages/Login";
 import Unauthorized from "./pages/Unauthorized";
 import Placeholder from "./pages/Placeholder";
 import AdminMFA from "./pages/AdminMFA";
-import AdminMFASetup from "./pages/AdminMFASetup";
+import AdminMFASetup from "./pages/AdminMfaSetup";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import CreateVerifier from "./pages/admin/CreateVerifier";
 import ManageUsers from "./pages/admin/ManageUsers";
