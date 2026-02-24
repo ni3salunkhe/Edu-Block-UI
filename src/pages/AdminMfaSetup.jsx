@@ -36,18 +36,30 @@ const AdminMFASetup = () => {
 
   const handleVerify = async (e) => {
     e.preventDefault();
+    setError(""); // Clear previous errors
 
     try {
+      console.log("Verifying MFA setup with token:", mfaToken);
       const res = await verifyAdminMFA({
         mfaToken,
         otp: parseInt(otp)
       });
 
+      console.log("MFA setup verification successful:", res.data);
       login(res.data.token, res.data.role);
       navigate("/admin/dashboard");
 
-    } catch {
-      setError("Invalid OTP. Please try again.");
+    } catch (err) {
+      console.error("MFA setup verification error:", err);
+      if (err.response?.data?.message) {
+        setError(err.response.data.message);
+      } else if (err.response?.status === 401) {
+        setError("Invalid OTP. Please try again.");
+      } else if (err.response?.status === 400) {
+        setError("Invalid OTP format. Please enter a 6-digit code.");
+      } else {
+        setError("Verification failed. Please try again.");
+      }
     }
   };
 

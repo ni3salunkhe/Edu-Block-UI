@@ -23,18 +23,53 @@ const AdminMFA = () => {
 
     const handleVerify = async (e) => {
         e.preventDefault();
+        setError(""); // Clear previous errors
 
         try {
+            console.log("Verifying MFA with token:", mfaToken);
             const res = await verifyAdminMFA({
                 mfaToken,
                 otp: parseInt(otp)
             });
 
-            login(res.data.token, res.data.role);
+            console.log("=== MFA VERIFICATION RESPONSE DEBUG ===");
+            console.log("Full response object:", res);
+            console.log("Response data:", res.data);
+            console.log("Response status:", res.status);
+            console.log("Response headers:", res.headers);
+
+            // Check different possible response structures
+            const token = res.data?.token || res.data?.jwt || res.token;
+            const userRole = res.data?.role || res.data?.userRole || res.role;
+
+            console.log("Extracted token:", token);
+            console.log("Extracted role:", userRole);
+
+            if (!token || !userRole) {
+                console.error("ERROR: Token or role missing from response!");
+                console.log("Available keys in res.data:", Object.keys(res.data || {}));
+                setError("Login successful but token not received. Please contact support.");
+                return;
+            }
+
+            login(token, userRole);
+
+            console.log("After login - localStorage token:", localStorage.getItem("token"));
+            console.log("After login - localStorage role:", localStorage.getItem("role"));
+
             navigate("/admin/dashboard");
 
         } catch (err) {
-            setError("Invalid or expired OTP");
+            console.error("MFA verification error:", err);
+            if (err.response?.data?.message) {
+                setError(err.response.data.message);
+            } else if (err.response?.status === 401) {
+                setError("Invalid or expired OTP. Please try again.");
+            } else if (err.response?.status === 400) {
+                setError("Invalid OTP format. Please enter a 6-digit code.");
+            } else {
+                setError("Verification failed. Please try again.");
+            }
         }
     };
 

@@ -11,7 +11,8 @@ node_modules/
 /build
 
 # Environment variables
-.env
+# .env is committed for Render deployment (contains production API URL)
+# .env.local is for local development only (gitignored)
 .env.local
 .env.development.local
 .env.test.local
