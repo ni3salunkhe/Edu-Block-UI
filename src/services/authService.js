@@ -7,5 +7,5 @@ export const loginRequest = (data) =>
 export const verifyAdminMFA = (data) =>
     api.post("/auth/admin/mfa/verify", data);
 
-export const setupAdminMFA = () =>
-    api.post("/auth/admin/mfa/setup");
+export const setupAdminMFA = (mfaToken) =>
+    api.post(`/auth/admin/mfa/setup?mfaToken=${mfaToken}`);

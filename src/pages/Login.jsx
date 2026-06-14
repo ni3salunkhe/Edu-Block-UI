@@ -45,6 +45,7 @@ const Login = () => {
             else if (role === "EMPLOYER") navigate("/employer/dashboard");
             else if (role === "VERIFIER") navigate("/verifier/dashboard");
             else if (role === "ADMIN") navigate("/admin/dashboard");
+            else if (role === "INSTITUTION") navigate("/institution/dashboard");
             else navigate("/");
 
         } catch (err) {

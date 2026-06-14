@@ -4,6 +4,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AuthProvider } from "./auth/AuthContext";
 import ProtectedRoute from "./auth/ProtectedRoute";
+import { useAuth } from "./auth/useAuth";
 import AppLayout from "./layouts/AppLayout";
 import Login from "./pages/Login";
 import Unauthorized from "./pages/Unauthorized";
@@ -14,10 +15,13 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import CreateVerifier from "./pages/admin/CreateVerifier";
 import ManageUsers from "./pages/admin/ManageUsers";
 import AuditLogs from "./pages/admin/AuditLogs";
+import ManageInstitutions from "./pages/admin/ManageInstitutions";
 import IndividualDashboard from "./pages/individual/IndividualDashboard";
 import MyDocuments from "./pages/individual/MyDocuments";
 import UploadDocument from "./pages/individual/UploadDocument";
 import ConsentRequests from "./pages/individual/ConsentRequests";
+import CredentialVault from "./pages/individual/CredentialVault";
+import MyInstitutions from "./pages/individual/MyInstitutions";
 import EmployerDashboard from "./pages/employer/EmployerDashboard";
 import SearchIndividual from "./pages/employer/SearchIndividual";
 import ApprovedAccess from "./pages/employer/ApprovedAccess";
@@ -26,9 +30,27 @@ import VerifierDashboard from "./pages/verifier/VerifierDashboard";
 import VerificationQueue from "./pages/verifier/VerificationQueue";
 import ReviewDocument from "./pages/verifier/ReviewDocument";
 import UserRegistration from "./pages/UserRegistration";
+import InstitutionDashboard from "./pages/institution/InstitutionDashboard";
+import InstitutionStudents from "./pages/institution/InstitutionStudents";
+import InstitutionCredentialCenter from "./pages/institution/InstitutionCredentialCenter";
+import InstitutionIssuedCredentials from "./pages/institution/InstitutionIssuedCredentials";
 import { LoadingProvider } from "./context/LoadingContext";
 import LoadingOverlay from "./components/ui/LoadingOverlay";
 import ErrorBoundary from "./components/ui/ErrorBoundary";
+
+const roleHomeMap = {
+  INDIVIDUAL: "/individual/dashboard",
+  EMPLOYER: "/employer/dashboard",
+  INSTITUTION: "/institution/dashboard",
+  ADMIN: "/admin/dashboard",
+  VERIFIER: "/verifier/dashboard",
+};
+
+const RoleBasedRedirect = () => {
+  const { role } = useAuth();
+  const target = roleHomeMap[role] || "/login";
+  return <Navigate to={target} replace />;
+};
 
 function App() {
   return (
@@ -52,6 +74,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/unauthorized" element={<Unauthorized />} />
               <Route path="/admin/mfa" element={<AdminMFA />} />
+              <Route path="/admin/mfa/setup" element={<AdminMFASetup />} />
 
               <Route
                 path="/"
@@ -61,8 +84,8 @@ function App() {
                   </ProtectedRoute>
                 }
               >
-                {/* Redirect root to appropriate dashboard or handle default */}
-                <Route index element={<Navigate to="/individual/dashboard" replace />} />
+                {/* Redirect root to appropriate dashboard based on role */}
+                <Route index element={<RoleBasedRedirect />} />
 
                 {/* INDIVIDUAL Routes */}
                 <Route
@@ -74,6 +97,8 @@ function App() {
                         <Route path="documents" element={<MyDocuments />} />
                         <Route path="upload" element={<UploadDocument />} />
                         <Route path="consents" element={<ConsentRequests />} />
+                        <Route path="vault" element={<CredentialVault />} />
+                        <Route path="institutions" element={<MyInstitutions />} />
                       </Routes>
                     </ProtectedRoute>
                   }
@@ -104,7 +129,7 @@ function App() {
                         <Route path="create" element={<CreateVerifier />} />
                         <Route path="audit" element={<AuditLogs />} />
                         <Route path="users" element={<ManageUsers />} />
-                        <Route path="mfa/setup" element={<AdminMFASetup />} />
+                        <Route path="institutions" element={<ManageInstitutions />} />
                       </Routes>
                     </ProtectedRoute>
                   }
@@ -119,6 +144,21 @@ function App() {
                         <Route path="dashboard" element={<VerifierDashboard />} />
                         <Route path="queue" element={<VerificationQueue />} />
                         <Route path="review/:id" element={<ReviewDocument />} />
+                      </Routes>
+                    </ProtectedRoute>
+                  }
+                />
+
+                {/* INSTITUTION Routes */}
+                <Route
+                  path="institution/*"
+                  element={
+                    <ProtectedRoute allowedRoles={["INSTITUTION"]}>
+                      <Routes>
+                        <Route path="dashboard" element={<InstitutionDashboard />} />
+                        <Route path="students" element={<InstitutionStudents />} />
+                        <Route path="credentials" element={<InstitutionCredentialCenter />} />
+                        <Route path="issued" element={<InstitutionIssuedCredentials />} />
                       </Routes>
                     </ProtectedRoute>
                   }

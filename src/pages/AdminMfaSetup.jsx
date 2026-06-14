@@ -23,9 +23,16 @@ const AdminMFASetup = () => {
 
     const fetchSetup = async () => {
       try {
-        const res = await setupAdminMFA();
-        setQrCode(res.data.qrCodeUrl);
-        setManualKey(res.data.manualKey);
+        const res = await setupAdminMFA(mfaToken);
+        const secret = res.data.manualKey;
+        setManualKey(secret);
+
+        // Construct the otpauth URL for Google Authenticator
+        const otpauth = `otpauth://totp/EduBlock:Admin?secret=${secret}&issuer=EduBlock`;
+        
+        // Use a public QR code API to generate the image
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(otpauth)}`;
+        setQrCode(qrUrl);
       } catch {
         setError("Failed to load MFA setup.");
       }

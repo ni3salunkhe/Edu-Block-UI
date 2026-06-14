@@ -7,6 +7,8 @@ const navConfig = {
     { name: "Dashboard", path: "/individual/dashboard", icon: "🏠" },
     { name: "My Documents", path: "/individual/documents", icon: "📄" },
     { name: "Upload Document", path: "/individual/upload", icon: "⬆️" },
+    { name: "My Institutions", path: "/individual/institutions", icon: "🏛️" },
+    { name: "Credential Vault", path: "/individual/vault", icon: "🏆" },
     { name: "Consents", path: "/individual/consents", icon: "🔐" },
   ],
   EMPLOYER: [
@@ -22,7 +24,14 @@ const navConfig = {
     { name: "Dashboard", path: "/admin/dashboard", icon: "🏠" },
     { name: "Create Verifier", path: "/admin/create", icon: "➕" },
     { name: "Manage Users", path: "/admin/users", icon: "👥" },
+    { name: "Manage Institutions", path: "/admin/institutions", icon: "🏛️" },
     { name: "Audit Logs", path: "/admin/audit", icon: "📜" },
+  ],
+  INSTITUTION: [
+    { name: "Dashboard", path: "/institution/dashboard", icon: "🏠" },
+    { name: "Student Associations", path: "/institution/students", icon: "👥" },
+    { name: "Credential Center", path: "/institution/credentials", icon: "🎓" },
+    { name: "Issued Credentials", path: "/institution/issued", icon: "📜" },
   ],
 };
 
