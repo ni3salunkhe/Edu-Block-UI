@@ -121,7 +121,7 @@ const Spinner = () => (
 
 // ── Detail Drawer ─────────────────────────────────────────────────────────────
 
-const DetailDrawer = ({ doc, onClose }) => {
+const DetailDrawer = ({ doc, onClose, onViewDocument }) => {
   if (!doc) return null;
   const t = doc?.trustMetadata;
 
@@ -226,14 +226,13 @@ const DetailDrawer = ({ doc, onClose }) => {
           {/* File Viewer */}
           {doc.filePath && (
             <div className="pt-3">
-              <a
-                href={doc.filePath}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                type="button"
+                onClick={() => onViewDocument(doc)}
                 className="inline-flex items-center gap-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-sm font-bold px-4 py-2.5 rounded-xl transition border border-indigo-100"
               >
                 📄 View Document
-              </a>
+              </button>
             </div>
           )}
         </div>
@@ -259,6 +258,7 @@ const CredentialVault = () => {
   const [statusFilter, setStatusFilter] = useState("ALL");
 
   const [selectedDoc, setSelectedDoc] = useState(null);
+  const [previewDoc, setPreviewDoc] = useState(null);
 
   const loadDocuments = useCallback(async () => {
     try {
@@ -315,6 +315,21 @@ const CredentialVault = () => {
 
     return matchesSearch && matchesSource && matchesTrust && matchesStatus;
   });
+
+  // ── Document Viewer ─────────────────────────────────────────────────────────
+  const handleViewDocument = (doc) => {
+    if (!doc.filePath) {
+      alert("Document URL not found");
+      return;
+    }
+    let url = doc.filePath;
+    if (url.startsWith("http://")) {
+      url = url.replace("http://", "https://");
+    }
+    setPreviewDoc({ ...doc, viewerUrl: url });
+  };
+
+  const closeViewer = () => setPreviewDoc(null);
 
   // ── Render ──────────────────────────────────────────────────────────────────
   return (
@@ -464,7 +479,62 @@ const CredentialVault = () => {
         )}
       </div>
 
-      <DetailDrawer doc={selectedDoc} onClose={() => setSelectedDoc(null)} />
+      <DetailDrawer doc={selectedDoc} onClose={() => setSelectedDoc(null)} onViewDocument={handleViewDocument} />
+
+      {/* PDF / Image Viewer Modal */}
+      {previewDoc && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl h-[85vh] flex flex-col">
+            {/* Modal Header */}
+            <div className="flex justify-between items-center px-5 py-3 border-b bg-gray-50 rounded-t-xl">
+              <h3 className="text-base font-semibold text-gray-800 truncate max-w-xs">
+                {previewDoc.trustMetadata?.documentType || previewDoc.fileName || "Document"}
+              </h3>
+              <div className="flex items-center gap-3">
+                <a
+                  href={
+                    (previewDoc.viewerUrl.toLowerCase().includes(".pdf") ||
+                      previewDoc.filePath?.toLowerCase().includes("/raw/upload/"))
+                      ? `https://docs.google.com/viewer?url=${encodeURIComponent(previewDoc.viewerUrl)}&embedded=false`
+                      : previewDoc.viewerUrl
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-semibold text-blue-600 hover:text-blue-800 transition"
+                >
+                  Open in new tab ↗
+                </a>
+                <button
+                  onClick={closeViewer}
+                  className="p-1 hover:bg-gray-200 text-gray-500 hover:text-gray-800 rounded transition"
+                  title="Close"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Body */}
+            <div className="flex-1 overflow-hidden bg-gray-100 rounded-b-xl flex items-center justify-center">
+              {previewDoc.viewerUrl.toLowerCase().includes(".pdf") ||
+                previewDoc.filePath?.toLowerCase().includes("/raw/upload/") ? (
+                // Use Google Docs viewer for PDFs
+                <iframe
+                  src={`https://docs.google.com/viewer?url=${encodeURIComponent(previewDoc.viewerUrl)}&embedded=true`}
+                  className="w-full h-full border-none"
+                  title="Document Viewer"
+                />
+              ) : (
+                <img
+                  src={previewDoc.viewerUrl}
+                  alt="Document Preview"
+                  className="max-w-full max-h-full object-contain mx-auto block py-4"
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

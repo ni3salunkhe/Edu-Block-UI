@@ -16,6 +16,7 @@ import CreateVerifier from "./pages/admin/CreateVerifier";
 import ManageUsers from "./pages/admin/ManageUsers";
 import AuditLogs from "./pages/admin/AuditLogs";
 import ManageInstitutions from "./pages/admin/ManageInstitutions";
+import AdminIntelligenceCenter from "./pages/admin/AdminIntelligenceCenter";
 import IndividualDashboard from "./pages/individual/IndividualDashboard";
 import MyDocuments from "./pages/individual/MyDocuments";
 import UploadDocument from "./pages/individual/UploadDocument";
@@ -23,17 +24,20 @@ import ConsentRequests from "./pages/individual/ConsentRequests";
 import CredentialVault from "./pages/individual/CredentialVault";
 import MyInstitutions from "./pages/individual/MyInstitutions";
 import EmployerDashboard from "./pages/employer/EmployerDashboard";
+import EmployerIntelligencePortal from "./pages/employer/EmployerIntelligencePortal";
 import SearchIndividual from "./pages/employer/SearchIndividual";
 import ApprovedAccess from "./pages/employer/ApprovedAccess";
 import ViewDocuments from "./pages/employer/ViewDocuments";
 import VerifierDashboard from "./pages/verifier/VerifierDashboard";
 import VerificationQueue from "./pages/verifier/VerificationQueue";
+import VerifierIntelligenceConsole from "./pages/verifier/VerifierIntelligenceConsole";
 import ReviewDocument from "./pages/verifier/ReviewDocument";
 import UserRegistration from "./pages/UserRegistration";
 import InstitutionDashboard from "./pages/institution/InstitutionDashboard";
 import InstitutionStudents from "./pages/institution/InstitutionStudents";
 import InstitutionCredentialCenter from "./pages/institution/InstitutionCredentialCenter";
 import InstitutionIssuedCredentials from "./pages/institution/InstitutionIssuedCredentials";
+import InstitutionIntelligencePortal from "./pages/institution/InstitutionIntelligencePortal";
 import { LoadingProvider } from "./context/LoadingContext";
 import LoadingOverlay from "./components/ui/LoadingOverlay";
 import ErrorBoundary from "./components/ui/ErrorBoundary";
@@ -42,7 +46,7 @@ const roleHomeMap = {
   INDIVIDUAL: "/individual/dashboard",
   EMPLOYER: "/employer/dashboard",
   INSTITUTION: "/institution/dashboard",
-  ADMIN: "/admin/dashboard",
+  ADMIN: "/admin/intelligence",
   VERIFIER: "/verifier/dashboard",
 };
 
@@ -111,6 +115,7 @@ function App() {
                     <ProtectedRoute allowedRoles={["EMPLOYER"]}>
                       <Routes>
                         <Route path="dashboard" element={<EmployerDashboard />} />
+                        <Route path="intelligence" element={<EmployerIntelligencePortal />} />
                         <Route path="search" element={<SearchIndividual />} />
                         <Route path="approved" element={<ApprovedAccess />} />
                         <Route path="view/:consentId" element={<ViewDocuments />} />
@@ -125,6 +130,7 @@ function App() {
                   element={
                     <ProtectedRoute allowedRoles={["ADMIN"]}>
                       <Routes>
+                        <Route path="intelligence" element={<AdminIntelligenceCenter />} />
                         <Route path="dashboard" element={<AdminDashboard />} />
                         <Route path="create" element={<CreateVerifier />} />
                         <Route path="audit" element={<AuditLogs />} />
@@ -142,7 +148,7 @@ function App() {
                     <ProtectedRoute allowedRoles={["VERIFIER"]}>
                       <Routes>
                         <Route path="dashboard" element={<VerifierDashboard />} />
-                        <Route path="queue" element={<VerificationQueue />} />
+                        <Route path="queue" element={<VerifierIntelligenceConsole />} />
                         <Route path="review/:id" element={<ReviewDocument />} />
                       </Routes>
                     </ProtectedRoute>
@@ -156,6 +162,7 @@ function App() {
                     <ProtectedRoute allowedRoles={["INSTITUTION"]}>
                       <Routes>
                         <Route path="dashboard" element={<InstitutionDashboard />} />
+                        <Route path="intelligence" element={<InstitutionIntelligencePortal />} />
                         <Route path="students" element={<InstitutionStudents />} />
                         <Route path="credentials" element={<InstitutionCredentialCenter />} />
                         <Route path="issued" element={<InstitutionIssuedCredentials />} />

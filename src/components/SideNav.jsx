@@ -13,6 +13,7 @@ const navConfig = {
   ],
   EMPLOYER: [
     { name: "Dashboard", path: "/employer/dashboard", icon: "🏠" },
+    { name: "Hiring Intelligence", path: "/employer/intelligence", icon: "⚡" },
     { name: "Search Individual", path: "/employer/search", icon: "🔍" },
     { name: "Approved Access", path: "/employer/approved", icon: "✅" },
   ],
@@ -21,6 +22,7 @@ const navConfig = {
     { name: "Verification Queue", path: "/verifier/queue", icon: "📋" },
   ],
   ADMIN: [
+    { name: "Intelligence Center", path: "/admin/intelligence", icon: "⚡" },
     { name: "Dashboard", path: "/admin/dashboard", icon: "🏠" },
     { name: "Create Verifier", path: "/admin/create", icon: "➕" },
     { name: "Manage Users", path: "/admin/users", icon: "👥" },
@@ -29,6 +31,7 @@ const navConfig = {
   ],
   INSTITUTION: [
     { name: "Dashboard", path: "/institution/dashboard", icon: "🏠" },
+    { name: "Intelligence Portal", path: "/institution/intelligence", icon: "⚡" },
     { name: "Student Associations", path: "/institution/students", icon: "👥" },
     { name: "Credential Center", path: "/institution/credentials", icon: "🎓" },
     { name: "Issued Credentials", path: "/institution/issued", icon: "📜" },
